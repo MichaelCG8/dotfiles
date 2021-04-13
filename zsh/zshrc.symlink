@@ -2,7 +2,7 @@
 export ZSH=$HOME/.dotfiles
 
 # your project folder that we can `c [tab]` to
-export PROJECTS=~/Code
+export PROJECTS=~/git_projects
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
@@ -13,10 +13,14 @@ then
 fi
 
 # all of our zsh files
+# typeset -U makes the config_files variable only keep the first of duplicate values when an array.
 typeset -U config_files
+# Recursively find .zsh files at any depth starting from $ZSH
 config_files=($ZSH/**/*.zsh)
 
 # load the path files
+# ${name:#pattern} filters out matching patterns.
+# The (M) flag keeps only the matching patterns.
 for file in ${(M)config_files:#*/path.zsh}
 do
   source $file
@@ -29,6 +33,8 @@ do
 done
 
 # initialize autocomplete here, otherwise functions won't be loaded
+# https://stackoverflow.com/questions/30840651/what-does-autoload-do-in-zsh
+# https://www.csse.uwa.edu.au/programming/linux/zsh-doc/zsh_23.html
 autoload -U compinit
 compinit
 
@@ -42,9 +48,11 @@ unset config_files
 
 # Better history
 # Credits to https://coderwall.com/p/jpj_6q/zsh-better-history-searching-with-arrow-keys
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
+# Looks like this makes your history work a bit like when you press up/down in ipython. Seems worthwhile to uncomment some day.
+# autoload -U up-line-or-beginning-search
+# autoload -U down-line-or-beginning-search
+# zle -N up-line-or-beginning-search
+# zle -N down-line-or-beginning-search
+# bindkey "^[[A" up-line-or-beginning-search # Up
+# bindkey "^[[B" down-line-or-beginning-search # Down
+

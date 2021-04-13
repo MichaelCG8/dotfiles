@@ -1,4 +1,102 @@
-syntax on
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+" An example for a vimrc file.
+"
+" Maintainer:	Bram Moolenaar <Bram@vim.org>
+" Last change:	2017 Sep 20
+"
+" To use it, copy it to
+"     for Unix and OS/2:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"  for MS-DOS and Win32:  $VIM\_vimrc
+"	    for OpenVMS:  sys$login:.vimrc
+
+" When started as "evim", evim.vim will already have done these settings.
+if v:progname =~? "evim"
+  finish
+endif
+
+" Get the defaults that most users want.
+source $VIMRUNTIME/defaults.vim
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file (restore to previous version)
+  if has('persistent_undo')
+    set undofile	" keep an undo file (undo changes after closing)
+  endif
+endif
+
+if &t_Co > 2 || has("gui_running")
+  " Switch on highlighting the last used search pattern.
+  set hlsearch
+endif
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  augroup END
+
+else
+
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Add optional packages.
+"
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+" The ! means the package won't be loaded right away but when plugins are
+" loaded during initialization.
+if has('syntax') && has('eval')
+  packadd! matchit
+endif
+
+function! BuildYCM(info)
+    " info is a dictionary with 3 fields.
+    " - name: name of the plugin
+    " - status: 'installed', 'updated', 'unchanged'
+    " - force: set on PlugInstall! or PlugUpdate!
+    if a:info.status == 'installed' || a:info.force
+        !./install.py --all
+    endif
+endfunction
+
+call plug#begin()
+Plug 'rust-lang/rust.vim'
+Plug 'racer-rust/vim-racer'
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+call plug#end()
+
+" set hidden " find out what this does.
+let g:racer_experimental_completer = 1
+let g:racer_insert_paren = 1
+
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
+
+" My settings
+set number
+set incsearch
+set hlsearch
+
+
+" Holman dotfiles
+" syntax on
+" " Wrap gitcommit file types at the appropriate length
+" filetype indent plugin on
