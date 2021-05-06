@@ -56,3 +56,11 @@ unset config_files
 # bindkey "^[[A" up-line-or-beginning-search # Up
 # bindkey "^[[B" down-line-or-beginning-search # Down
 
+# Allows up/down arrows to search history based on what is already entered.
+# https://unix.stackexchange.com/a/97844/394372
+autoload -U history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^[[A" history-beginning-search-backward-end
+bindkey "^[[B" history-beginning-search-forward-end
+
