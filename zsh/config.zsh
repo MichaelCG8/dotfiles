@@ -10,7 +10,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 
 # Don't nice background tasks.
-# This would set backgroudn jobs to a lower priority.
+# This would set background jobs to a lower priority.
 setopt NO_BG_NICE
 
 # With HUP when you exit the shell, the started processes will
@@ -47,7 +47,7 @@ setopt EXTENDED_HISTORY
 setopt PROMPT_SUBST
 
 # Offer to correct suspected spelling mistakes in commands (not arguments).
-setopt CORRECT
+# setopt CORRECT
 
 # TODO: https://www.zsh.org/mla/users/2003/msg00610.html
 # setopt COMPLETE_IN_WORD
