@@ -1,0 +1,20 @@
+#!/bin/zsh
+#
+# Based on:
+# https://threkk.medium.com/how-to-use-bookmarks-in-bash-zsh-6b8074e40774
+#
+# This lets you quickly jump to bookmarked locations.
+#
+# Type:
+#
+#   bm <tab>
+#
+# ...to autocomplete on all of your bookmarks in the directory specified in
+# `functions/_bm`. Typically I'm using it like:
+#
+#    bm dal<tab>
+#
+# ...to quickly jump into my dalmore bookmark.
+
+cd -P "$HOME/.bookmarks/$1"
+

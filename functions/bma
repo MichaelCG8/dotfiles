@@ -1,0 +1,23 @@
+#!/bin/zsh
+#
+# This lets you add a bookmarked locations.
+#
+# Type:
+#
+#   bma <bookmark name>
+#
+# ...to add the current location as a bookmark.
+#
+# Alternatively, type:
+# 
+#     bma
+#
+# On its own to crate a bookmark with a name that is the last component of the working directory. e.g.
+#
+#     cd path/to/my/cool_dir
+#     bma
+#
+# ... creates a new bookmark called cool_dir which points to path/to/my/cool_dir
+
+ln -s "$(pwd)" "$HOME/.bookmarks/$1"
+

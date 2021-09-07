@@ -1,0 +1,12 @@
+#!/bin/zsh
+#
+# This lists the existing bookmarks.
+#
+# Type:
+#
+#   bml
+#
+# ...to list the contents of $HOME/bookmarks.
+
+ls -la "$HOME/.bookmarks"
+
