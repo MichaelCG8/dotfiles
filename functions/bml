@@ -8,5 +8,5 @@
 #
 # ...to list the contents of $HOME/bookmarks.
 
-ls -la "$HOME/.bookmarks"
+ls -la "$HOME/.bookmarks" | grep "\->" | sed 's/ -> / /' | awk '{print $9, $10}'
 
