@@ -14,6 +14,15 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Rust implementation of tldr
 # https://github.com/tldr-pages/tldr
 # https://crates.io/crates/tealdeer
-sudo apt-get install libssl-dev
+unameOut="$(uname -s)"
+if [[ $unameOut == "Linux" ]] then
+    sudo apt-get install libssl-dev
+elif [[ $unameOut == "Darwin" ]] then
+    brew install openssl
+else
+    echo "Unknown kernel: $unameOut"
+    exit 1
+fi
+
 cargo install tealdeer
 
