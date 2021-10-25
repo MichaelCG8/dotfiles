@@ -1,0 +1,17 @@
+#!/bin/zsh
+#
+# This joins all the .mp4 files in a directory into one file. 
+#
+# Type:
+#
+#   join_mp4 out.mp4
+#
+# ...to caoll the concatenated file out.mp4.
+
+if [[ -n "$1" ]]
+then
+    ffmpeg -f concat -safe 0 -i <(find . -type f -name '*.mp4' -printf "file '$PWD/%p'\n"| sort) -c copy $1
+else
+    echo "Output file not given. Use like 'join_mp4 out.mp4'"
+fi
+
