@@ -1,11 +1,22 @@
 #!/usr/bin/env bash
 
+echo
+echo "Running rust install script"
+
 ######################
 # The rust toolchain #
 ######################
 
 # https://www.rust-lang.org/tools/install
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo --version > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "rust already installed"
+else
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+fi
+
+source $HOME/.cargo/env
 
 ###################
 # Useful binaries #
@@ -15,9 +26,21 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # https://github.com/tldr-pages/tldr
 # https://crates.io/crates/tealdeer
 unameOut="$(uname -s)"
-if [[ $unameOut == "Linux" ]] then
-    sudo apt-get install libssl-dev
-elif [[ $unameOut == "Darwin" ]] then
+if [[ $unameOut == "Linux" ]]
+then
+    distroName="$(grep "^NAME=" /etc/os-release)"
+    if [[ "$distroName" == *"Fedora"* ]]
+    then
+        echo "No tldr dependencies on Fedora"
+    elif [[ "$distroName" == *"Mint"* ]]
+    then
+    	sudo apt-get install libssl-dev
+    else
+        echo "Unknown Linux distribution: $distroName"
+        exit 1
+    fi
+elif [[ $unameOut == "Darwin" ]]
+then
     brew install openssl
 else
     echo "Unknown kernel: $unameOut"

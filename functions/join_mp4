@@ -6,7 +6,7 @@
 #
 #   join_mp4 out.mp4
 #
-# ...to caoll the concatenated file out.mp4.
+# ...to call the concatenated file out.mp4.
 
 if [[ -n "$1" ]]
 then
