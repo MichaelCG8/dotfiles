@@ -17,9 +17,12 @@ then
         echo "Adding rpm repositories"
 	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 	sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+	sudo dnf update
 	echo "Fedora install ready to go"
     elif [[ "$distroName" == *"Mint"* ]]
     then
+	sudo apt-get update
+	sudo apt-get upgrade
         echo "Linux Mint install ready to go"
     else
         echo "Unknown Linux distribution: $distroName"
@@ -35,3 +38,4 @@ fi
 
 # find the installers and run them iteratively
 find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+
