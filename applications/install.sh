@@ -123,3 +123,61 @@ else
     fi	
 fi
 
+
+which thunderbird > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "Thunderbird already installed"
+else
+    unameOut="$(uname -s)"
+    if [[ $unameOut == "Linux" ]]
+    then
+        distroName="$(grep "^NAME=" /etc/os-release)"
+        if [[ "$distroName" == *"Fedora"* ]]
+        then
+            sudo dnf install thunderbird
+        elif [[ "$distroName" == *"Mint"* ]]
+        then
+	    echo "Thunderbird install not automated on Mint"
+        else
+            echo "Unknown Linux distribution: $distroName"
+            exit 1
+        fi
+    elif [[ $unameOut == "Darwin" ]]
+    then
+        echo "Thunderbird install not automated on Mac"
+    else
+        echo "Unknown kernel: $unameOut"
+        exit 1
+    fi	
+fi
+
+
+which gimp > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "GIMP already installed"
+else
+    unameOut="$(uname -s)"
+    if [[ $unameOut == "Linux" ]]
+    then
+        distroName="$(grep "^NAME=" /etc/os-release)"
+        if [[ "$distroName" == *"Fedora"* ]]
+        then
+            sudo dnf install gimp
+        elif [[ "$distroName" == *"Mint"* ]]
+        then
+	    echo "GIMP install not automated on Mint"
+        else
+            echo "Unknown Linux distribution: $distroName"
+            exit 1
+        fi
+    elif [[ $unameOut == "Darwin" ]]
+    then
+        echo "GIMP install not automated on Mac"
+    else
+        echo "Unknown kernel: $unameOut"
+        exit 1
+    fi	
+fi
+
