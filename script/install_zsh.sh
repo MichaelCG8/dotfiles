@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # Install zsh if it is not already.
-zsh --version > /dev/null
+which zsh > /dev/null
 if [[ $? == 0 ]]
 then
     echo "zsh already installed"

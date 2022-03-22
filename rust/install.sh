@@ -8,7 +8,7 @@ echo "Running rust install script"
 ######################
 
 # https://www.rust-lang.org/tools/install
-cargo --version > /dev/null
+which cargo > /dev/null
 if [[ $? == 0 ]]
 then
     echo "rust already installed"
@@ -25,7 +25,7 @@ source $HOME/.cargo/env
 # Rust implementation of tldr
 # https://github.com/tldr-pages/tldr
 # https://crates.io/crates/tealdeer
-tldr --version > /dev/null
+which tldr > /dev/null
 if [[ $? == 0 ]]
 then
     echo "tldr already installed"
