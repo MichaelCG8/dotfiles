@@ -94,3 +94,32 @@ else
     esac
 fi
 
+
+which inkscape > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "Inkscape already installed"
+else
+    unameOut="$(uname -s)"
+    if [[ $unameOut == "Linux" ]]
+    then
+        distroName="$(grep "^NAME=" /etc/os-release)"
+        if [[ "$distroName" == *"Fedora"* ]]
+        then
+            sudo dnf install inkscape
+        elif [[ "$distroName" == *"Mint"* ]]
+        then
+	    echo "Inkscape install not automated on Mint"
+        else
+            echo "Unknown Linux distribution: $distroName"
+            exit 1
+        fi
+    elif [[ $unameOut == "Darwin" ]]
+    then
+        brew install --cask inkscape
+    else
+        echo "Unknown kernel: $unameOut"
+        exit 1
+    fi	
+fi
+
