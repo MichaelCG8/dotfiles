@@ -61,5 +61,5 @@ if [[ $? == 0 ]]
 then
     echo "bat already installed"
 else
-    cargo install bat
+    cargo install --locked bat
 fi
