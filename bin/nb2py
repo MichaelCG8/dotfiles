@@ -1,0 +1,31 @@
+#! /usr/bin/env python
+
+import json
+import sys
+
+
+def main():
+    n_args = len(sys.argv) - 1
+    if n_args != 1:
+        raise RuntimeError(
+            f"One argument should be provided (the name of the notebook). Got {n_args}."
+        )
+
+    with open(sys.argv[1]) as f:
+        nb = json.load(f)
+
+    for cell in nb["cells"]:
+        if cell["cell_type"] == "markdown":
+            print("# MARKDOWN START")
+            print("".join(f"# {line}" for line in cell["source"]))
+            print("# MARKDOWN END")
+        elif cell["cell_type"] == "code":
+            print("".join(cell["source"]))
+        else:
+            raise ValueError(f"Unknown cell type: {cell['cell_type']}")
+        print(f"\n# {'-'*60}\n")
+
+
+if __name__ == "__main__":
+    main()
+
