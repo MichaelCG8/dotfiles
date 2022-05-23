@@ -5,3 +5,6 @@
 # Use tldr in pager mode, rather than printing to stdout.
 alias tldr="tldr --pager"
 
+# Substitute bat for cat.
+alias bat="cat"
+

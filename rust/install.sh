@@ -55,3 +55,11 @@ else
     cargo install tealdeer
 fi
 
+
+which bat > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "bat already installed"
+else
+    cargo install bat
+fi
