@@ -6,5 +6,5 @@
 alias tldr="tldr --pager"
 
 # Substitute bat for cat.
-alias bat="cat"
+alias cat="bat"
 
