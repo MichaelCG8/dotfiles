@@ -1,0 +1,4 @@
+#compdef count
+_files -/
+
+# See further documentation in `functions/count`.

@@ -1,0 +1,23 @@
+#!/bin/zsh
+#
+# This lets you count the number of objects in a directory.
+#
+# Type:
+#
+#   count
+#
+# ...to count the objects in the working directory.
+#
+# Type: 
+#
+#   count <tab>
+#
+# ...to autocomplete on all the sub-directories of the working directory.
+
+if [[ -z "$1" ]]
+then
+    ls -A | wc -l
+else
+    ls -A "$1" | wc -l
+fi
+
