@@ -3,5 +3,5 @@
 #######################################
 
 # Use tldr in pager mode, rather than printing to stdout.
-alias tldr="tldr -p"
+alias tldr="tldr --pager"
 

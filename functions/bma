@@ -12,7 +12,7 @@
 # 
 #     bma
 #
-# On its own to crate a bookmark with a name that is the last component of the working directory. e.g.
+# On its own to create a bookmark with a name that is the last component of the working directory. e.g.
 #
 #     cd path/to/my/cool_dir
 #     bma
