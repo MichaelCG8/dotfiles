@@ -31,6 +31,15 @@ else
     fi
 fi
 
+which fzf > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "fzf already installed"
+else
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --key-bindings --completion --no-update-rc --no-zsh --no-bash
+fi
+
 which vlc > /dev/null
 if [[ $? == 0 ]]
 then
@@ -175,6 +184,35 @@ else
     elif [[ $unameOut == "Darwin" ]]
     then
         echo "GIMP install not automated on Mac"
+    else
+        echo "Unknown kernel: $unameOut"
+        exit 1
+    fi	
+fi
+
+
+which cmake > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "cmake already installed"
+else
+    unameOut="$(uname -s)"
+    if [[ $unameOut == "Linux" ]]
+    then
+        distroName="$(grep "^NAME=" /etc/os-release)"
+        if [[ "$distroName" == *"Fedora"* ]]
+        then
+            sudo dnf install cmake
+        elif [[ "$distroName" == *"Mint"* ]]
+        then
+	    echo "cmake install not automated on Mint"
+        else
+            echo "Unknown Linux distribution: $distroName"
+            exit 1
+        fi
+    elif [[ $unameOut == "Darwin" ]]
+    then
+        echo "cmake install not automated on Mac"
     else
         echo "Unknown kernel: $unameOut"
         exit 1
