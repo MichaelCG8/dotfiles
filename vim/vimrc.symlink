@@ -74,11 +74,17 @@ call plug#begin()
 Plug 'rust-lang/rust.vim'
 Plug 'racer-rust/vim-racer'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug '~/.fzf'
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 " set hidden " find out what this does.
 let g:racer_experimental_completer = 1
 let g:racer_insert_paren = 1
+
+" Map Ctrl-P to the fzf :Files command
+nnoremap <C-p> :Files<Cr>
 
 augroup Racer
     autocmd!
