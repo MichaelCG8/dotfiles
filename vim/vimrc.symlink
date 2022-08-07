@@ -72,35 +72,25 @@ endfunction
 
 call plug#begin()
 Plug 'rust-lang/rust.vim'
-Plug 'racer-rust/vim-racer'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug '~/.fzf'
-"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
 
 " set hidden " find out what this does.
-let g:racer_experimental_completer = 1
-let g:racer_insert_paren = 1
 
 " Map Ctrl-P to the fzf :Files command
 nnoremap <C-p> :Files<Cr>
-
-augroup Racer
-    autocmd!
-    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
-    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
-    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
-    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
-    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
-    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
-augroup END
 
 " My settings
 set number
 set incsearch
 set hlsearch
+set tabstop=4
+set shiftwidth=4
+set expandtab
 
+autocmd Filetype sh setlocal noexpandtab
 
 " Holman dotfiles
 " syntax on
