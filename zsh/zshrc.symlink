@@ -69,3 +69,5 @@ PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{blue
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPS="--extended"
 
+source $HOME/.zconda_init
+
