@@ -1,0 +1,13 @@
+#!/bin/zsh
+#
+# This lets you quickly move down directories in your working tree.
+#
+# Type:
+#
+#   down <enter>
+#
+# ...to fuzzy find directories recursively from your working directory.
+
+target=$(find . -type d | fzf)
+cd "$target"
+
