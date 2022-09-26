@@ -35,7 +35,3 @@ alias la='ls -A'
 alias l='ls -CF'
 alias lg='ls -a | grep'
 
-#################################################################
-
-# TODO: Should this be in functions or bin?
-cl() { cd $1 && ls ; }
