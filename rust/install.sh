@@ -55,6 +55,15 @@ else
     cargo install tealdeer
 fi
 
+# User friendly implementation of du.
+which dust > /dev/null
+if [[ $? == 0 ]]
+then
+    echo "dust already installed"
+else
+    cargo install du-dust
+fi
+
 
 which bat > /dev/null
 if [[ $? == 0 ]]
