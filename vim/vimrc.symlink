@@ -91,6 +91,7 @@ set hlsearch
 set tabstop=4
 set shiftwidth=4
 set expandtab
+set ignorecase
 
 nnoremap gd :YcmCompleter GoToDefinition<Cr>
 
@@ -103,6 +104,9 @@ set foldmethod=syntax
 let g:ycm_clangd_args=['--header-insertion=never']
 
 autocmd Filetype sh setlocal noexpandtab
+
+" Get vim to treat metal files as cpp.
+autocmd BufNewFile,BufRead *.metal set filetype=cpp
 
 " Holman dotfiles
 " syntax on
