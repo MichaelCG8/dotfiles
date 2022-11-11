@@ -112,3 +112,5 @@ autocmd BufNewFile,BufRead *.metal set filetype=cpp
 " syntax on
 " " Wrap gitcommit file types at the appropriate length
 " filetype indent plugin on
+
+set cursorline
