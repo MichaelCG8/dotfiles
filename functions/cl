@@ -5,5 +5,5 @@
 # TODO: Add tab completion to only find directories.
 
 cd $1
-ls
+ls -A
 
