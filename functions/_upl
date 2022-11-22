@@ -1,0 +1,7 @@
+#compdef upl
+local -a working_dir_path
+IFS='/' read -rA working_dir_path <<< "$(pwd)"
+working_dir_path=("${working_dir_path[@]:1:-1}")  # Strip leading blank (for root dir) and current directory.
+_describe 'command' working_dir_path
+
+# See further documentation in `functions/upl`.

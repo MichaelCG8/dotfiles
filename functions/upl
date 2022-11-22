@@ -1,0 +1,17 @@
+#!/bin/zsh
+#
+# This lets you quickly move up directories in your working tree, then lists the contents.
+#
+# Type:
+#
+#   upl <tab>
+#
+# ...to autocomplete on the directories in your working path.
+#
+# or:
+#
+#   upl 2
+#
+# ...to move up that many directory levels.
+
+up "$1" && ls -A
