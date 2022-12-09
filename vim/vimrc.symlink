@@ -99,6 +99,7 @@ set foldmethod=syntax
 "set foldnestmax=10
 "set nofoldenable
 "set foldlevel=2
+set foldlevel=99  " Stops everything being folded by default on file open.
 
 " Stop ycm from automatically adding header files when completing a symbol.
 let g:ycm_clangd_args=['--header-insertion=never']
