@@ -94,6 +94,7 @@ set shiftwidth=4
 set expandtab
 set ignorecase
 set cursorline
+colorscheme my_colorscheme
 
 nnoremap gd :YcmCompleter GoToDefinition<Cr>
 
