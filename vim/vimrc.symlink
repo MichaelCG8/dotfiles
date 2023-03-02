@@ -93,6 +93,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set ignorecase
+set cursorline
 
 nnoremap gd :YcmCompleter GoToDefinition<Cr>
 
@@ -115,4 +116,11 @@ autocmd BufNewFile,BufRead *.metal set filetype=cpp
 " " Wrap gitcommit file types at the appropriate length
 " filetype indent plugin on
 
-set cursorline
+" Use clipboard as default register
+" This lets you yank text and paste it in other programs,
+" or copy from other programs and p in vim.
+if system('uname -s') == "Darwin\n"
+  set clipboard=unnamed "OSX
+else
+  set clipboard=unnamedplus "Linux
+endif
