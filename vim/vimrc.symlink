@@ -76,6 +76,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'wellle/context.vim'
+Plug 'dense-analysis/ale'
 call plug#end()
 
 " set hidden " find out what this does.
