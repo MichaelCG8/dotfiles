@@ -77,7 +77,10 @@ Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'wellle/context.vim'
 Plug 'dense-analysis/ale'
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 call plug#end()
+
+let g:doge_doc_standard_python = 'numpy'
 
 " set hidden " find out what this does.
 
