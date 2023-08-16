@@ -15,6 +15,17 @@
 #    bm dal<tab>
 #
 # ...to quickly jump into my dalmore bookmark.
+#
+# You can also pass to arguments to fuzzy find in the bookmarks directory.
 
-cd -P "$HOME/.bookmarks/$1"
+if [ -z "$1" ]; then
+    # Get the links in the bookmarks directory, strip the leading path,
+    # pass to fzf and get the selected entry.
+    selected=$(find "$HOME/.bookmarks" -type l \
+               | sed "s|$HOME/.bookmarks/||" \
+               | fzf)
+else
+    selected="$1"
+fi
+cd -P "$HOME/.bookmarks/$selected"
 
