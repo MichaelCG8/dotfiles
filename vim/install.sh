@@ -45,7 +45,7 @@ success () {
 # Install colorscheme.
 colorscheme_dir="$HOME/.vim/colors"
 mkdir -p "$colorscheme_dir"
-src="$ZSH/vim/my_colorscheme.vim.symlink"
+src="$DOTFILES/vim/my_colorscheme.vim.symlink"
 dst="$colorscheme_dir/my_colorscheme.vim"
 ln -sf "$src" "$dst"
 success "Installed vim colorscheme 'my_colorscheme' to $dst"

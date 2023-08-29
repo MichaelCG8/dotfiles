@@ -40,7 +40,7 @@ success () {
 # Install config
 config_dir="$HOME/.config"
 mkdir -p "$config_dir"
-src="$ZSH/neovim/config.symlink"
+src="$DOTFILES/neovim/config.symlink"
 dst="$config_dir/nvim"
 ln -sf "$src" "$dst"
 success "Installed neovim config to $dst"
