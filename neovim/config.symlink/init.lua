@@ -243,7 +243,12 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
+-- NOTE: Disabled since mac Terminal doesn't suppor true color, so I'm
+--       using a simpler colorscheme based on the builtin slate one - 
+--       see ~/.config/nvim/colors/my_colorscheme.vim.
+--       Setting this option seems to break it when using mac Terminal,
+--       although vscode terminal seems still seems fine.
+-- vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
 
