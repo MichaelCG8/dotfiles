@@ -4,7 +4,7 @@
 
 set -e
 
-cd "$(dirname $0)"/..
+cd "$(dirname "$0")"/..
 echo
 echo "Running all install scripts"
 
@@ -15,8 +15,8 @@ then
     if [[ "$distroName" == *"Fedora"* ]]
     then
         echo "Adding rpm repositories"
-	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-	sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm
+	sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
 	sudo dnf update
 	echo "Fedora install ready to go"
     elif [[ "$distroName" == *"Mint"* ]]

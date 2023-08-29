@@ -3,7 +3,7 @@
 echo
 echo "Running neovim install script"
 
-which nvim > /dev/null
+which nvim > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "neovim already installed"

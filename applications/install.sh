@@ -59,7 +59,7 @@ esac
 
 needs_installed () {
 	appRunName=$1
-	if which "$appRunName" >> /dev/null
+	if which "$appRunName" > /dev/null 2>&1
 	then
 		echo "$appRunName is already installed"
 		return 1

@@ -3,7 +3,7 @@
 echo
 echo "Running vim install script"
 
-which vim > /dev/null
+which vim > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "vim already installed"

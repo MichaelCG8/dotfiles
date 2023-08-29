@@ -8,7 +8,7 @@ echo "Running rust install script"
 ######################
 
 # https://www.rust-lang.org/tools/install
-which cargo > /dev/null
+which cargo > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "rust already installed"
@@ -25,7 +25,7 @@ source $HOME/.cargo/env
 # Rust implementation of tldr
 # https://github.com/tldr-pages/tldr
 # https://crates.io/crates/tealdeer
-which tldr > /dev/null
+which tldr > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "tldr already installed"
@@ -56,7 +56,7 @@ else
 fi
 
 # User friendly implementation of du.
-which dust > /dev/null
+which dust > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "dust already installed"
@@ -65,7 +65,7 @@ else
 fi
 
 
-which bat > /dev/null
+which bat > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "bat already installed"
