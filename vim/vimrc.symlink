@@ -100,6 +100,7 @@ set cursorline
 colorscheme my_colorscheme
 
 nnoremap gd :YcmCompleter GoToDefinition<Cr>
+nnoremap gc :YcmCompleter GoToReferences<Cr>
 
 set foldmethod=syntax
 "set foldnestmax=10
