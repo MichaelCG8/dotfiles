@@ -27,5 +27,8 @@ if [ -z "$1" ]; then
 else
     selected="$1"
 fi
-cd -P "$HOME/.bookmarks/$selected"
 
+# Check that $selected is not empty, e.g. by Ctrl-C on while in fzf.
+if [ -n "$selected" ]; then
+    cd -P "$HOME/.bookmarks/$selected"
+fi
