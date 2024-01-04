@@ -278,6 +278,7 @@ require('telescope').setup {
     file_ignore_patterns = {
       "%.pyc",
       "%~",
+      "CMakeFiles",
     },
     mappings = {
       i = {
