@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # Install zsh if it is not already.
-which zsh > /dev/null
+which zsh > /dev/null 2>&1
 if [[ $? == 0 ]]
 then
     echo "zsh already installed"
@@ -28,5 +28,5 @@ else
 	exit 1
     fi
 fi
-chsh -s $(which zsh)
+sudo chsh -s $(which zsh)
 
