@@ -17,6 +17,7 @@ then
         echo "Adding rpm repositories"
 	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm
 	sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
+	sudo dnf install make automake gcc gcc-c++ kernel-devel 
 	sudo dnf update
 	echo "Fedora install ready to go"
     elif [[ "$distroName" == *"Mint"* ]]

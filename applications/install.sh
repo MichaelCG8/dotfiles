@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 FedoraApps=(
-	"g++ installName=gcc-c++"
 	"thunderbird"
 	"shellcheck installName=ShellCheck"
 )
