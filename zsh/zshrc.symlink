@@ -1,6 +1,14 @@
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES=$HOME/.dotfiles
 
+# Set default terminal editor
+if command -v nvim &> /dev/null; then
+  # export EDITOR=$(command -v nvim)
+  export EDITOR=nvim
+elif command -v vim &> /dev/null; then
+  export EDITOR=vim
+fi
+
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/projects
 
