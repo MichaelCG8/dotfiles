@@ -279,6 +279,7 @@ require('telescope').setup {
       "%.pyc",
       "%~",
       "CMakeFiles",
+      "%.xlsx",
     },
     mappings = {
       i = {
