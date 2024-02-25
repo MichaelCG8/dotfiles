@@ -72,6 +72,9 @@ zle -N history-beginning-search-forward-end history-search-end
 bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
 
+# Add a newline before the prompt. Putting a newline character directly in the prompt causes redraw issues.
+# https://stackoverflow.com/a/20615683
+precmd() { print "" }
 PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{blue}%2~%f%b"$'\n'"%# "
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
