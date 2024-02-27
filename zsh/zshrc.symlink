@@ -1,6 +1,8 @@
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES=$HOME/.dotfiles
 
+export XDG_CONFIG_HOME=$HOME/.config
+
 # Set default terminal editor
 if command -v nvim &> /dev/null; then
   # export EDITOR=$(command -v nvim)
@@ -77,8 +79,7 @@ bindkey "^[[B" history-beginning-search-forward-end
 precmd() { print "" }
 PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{blue}%2~%f%b"$'\n'"%# "
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 export FZF_DEFAULT_OPS="--extended"
 
 source $HOME/.zconda_init
-

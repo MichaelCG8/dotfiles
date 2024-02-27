@@ -22,7 +22,7 @@ MacApps=(
 AllOSApps=(
 	"ffmpeg"
 	"cmake"
-	"fzf installCommand=\"git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --key-bindings --completion --no-update-rc --no-zsh --no-bash\""
+	"fzf installCommand=\"git clone --depth 1 https://github.com/junegunn/fzf.git ~/.installers/fzf && ~/.installers/fzf/install --key-bindings --completion --no-update-rc --no-bash --xdg\""
 )
 
 echo
@@ -75,7 +75,7 @@ parse_app () {
 	installOptionsArr=()
 	if [[ ${elements[*]} == "installCommand="* ]]
 	then
-		echo "$runName" installComand="$installCommand"
+		echo "$runName" installCommand="$installCommand"
 	else
 		for el in "${elements[@]}"
 		do
@@ -114,7 +114,7 @@ install_list () {
 			then
 				installCommand="${appArray[2]}"
 				installCommand="${installCommand:15}"
-				$installCommand
+				"$installCommand"
 			else
 				appInstallName="${appArray[1]}"
 
