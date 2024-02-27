@@ -3,6 +3,7 @@
 # Jump to File
 #
 # Fuzzy search for a file, and cd to the directory containing it.
+# A preview shows the contents of the file.
 #
 # To begin the search type:
 #
