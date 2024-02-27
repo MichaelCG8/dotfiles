@@ -15,4 +15,10 @@
 
 # TODO: Check for a --help argument. Any other argument should be an error.
 
-cd "$(fzf --print0 | xargs -0 --no-run-if-empty dirname)"
+if command -v bat &> /dev/null; then
+    preview_command='bat --color=always {}'
+else
+    preview_command='cat {}'
+fi
+
+cd "$(fzf --print0 --preview "$preview_command" | xargs -0 --no-run-if-empty dirname)"
