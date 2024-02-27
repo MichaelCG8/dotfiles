@@ -1,0 +1,18 @@
+#!/bin/zsh
+#
+# Jump to File
+#
+# Fuzzy search for a file, and cd to the directory containing it.
+#
+# To begin the search type:
+#
+#   jf
+#
+# Ctrl-c in the fuzzy finder exits without changing directory.
+
+# The --print0 and -0 flags are required to delimit items with a null character,
+# rather than a space. This allows paths containing spaces.
+
+# TODO: Check for a --help argument. Any other argument should be an error.
+
+cd "$(fzf --print0 | xargs -0 --no-run-if-empty dirname)"
