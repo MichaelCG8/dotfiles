@@ -77,7 +77,7 @@ bindkey "^[[B" history-beginning-search-forward-end
 # Add a newline before the prompt. Putting a newline character directly in the prompt causes redraw issues.
 # https://stackoverflow.com/a/20615683
 precmd() { print "" }
-PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{blue}%2~%f%b"$'\n'"%# "
+PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{magenta}%3~%f%b"$'\n'"%# "
 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 export FZF_DEFAULT_OPS="--extended"
