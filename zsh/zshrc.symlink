@@ -83,3 +83,4 @@ PS1="%(?.%F{green}√.%F{red}?%?)%f %D{%Y/%m/%d %H:%M:%S} %F{cyan}%m%f %B%F{mage
 export FZF_DEFAULT_OPS="--extended"
 
 source $HOME/.zconda_init
+alias today='nvim $HOME/Desktop/today.md'
