@@ -96,16 +96,39 @@ require('lazy').setup({
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
-      'L3MON4D3/LuaSnip',
+      {
+        'L3MON4D3/LuaSnip',
+        build = (function()
+          -- Build Step is needed for regex support in snippets.
+          -- This step is not supported in many windows environments.
+          -- Remove the below condition to re-enable on windows.
+          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+            return
+          end
+          return 'make install_jsregexp'
+        end)(),
+        dependencies = {
+          -- `friendly-snippets` contains a variety of premade snippets.
+          --    See the README about individual language/framework/plugin snippets:
+          --    https://github.com/rafamadriz/friendly-snippets
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
+        },
+      },
       'saadparwaiz1/cmp_luasnip',
 
-      -- Adds LSP completion capabilities
+      -- Adds other completion capabilities.
+      --  nvim-cmp does not ship with all sources by default. They are split
+      --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
-
-      -- Adds a number of user-friendly snippets
-      'rafamadriz/friendly-snippets',
+      'hrsh7th/cmp-path',
     },
   },
 
@@ -150,9 +173,9 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
+    main = "ibl",
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
+      indent = { char = '┊' },
     },
   },
 
@@ -189,6 +212,23 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    opts={
+      enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+      max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+      min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+      line_numbers = true,
+      multiline_threshold = 20, -- Maximum number of lines to show for a single context
+      trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+      mode = 'topline',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+      -- Separator between context and content. Should be a single character string, like '-'.
+      -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+      separator = nil,
+      zindex = 20, -- The Z-index of the context window
+      on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+    },
+  },
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -203,6 +243,10 @@ require('lazy').setup({
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
 }, {})
+
+vim.keymap.set("n", "[c", function()
+  require("treesitter-context").go_to_context(vim.v.count1)
+end, { silent = true, desc = "Go to context" })
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -530,3 +574,4 @@ cmp.setup {
 
 vim.cmd('colorscheme my_colorscheme')
 vim.cmd('set cursorline')
+vim.api.nvim_set_var('markdown_folding', 1)

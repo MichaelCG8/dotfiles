@@ -74,12 +74,12 @@ endfunction
 
 call plug#begin()
 Plug 'rust-lang/rust.vim'
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'wellle/context.vim'
 Plug 'dense-analysis/ale'
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 call plug#end()
 
 let g:doge_doc_standard_python = 'numpy'
