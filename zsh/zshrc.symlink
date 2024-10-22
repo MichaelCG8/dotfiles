@@ -4,6 +4,9 @@ export DOTFILES=$HOME/.dotfiles
 export XDG_CONFIG_HOME=$HOME/.config
 
 # Set default terminal editor
+if [ -d "/$HOME/.installers/nvim-macos/bin" ]; then
+    PATH="/$HOME/.installers/nvim-macos/bin:$PATH"
+fi
 if command -v nvim &> /dev/null; then
   # export EDITOR=$(command -v nvim)
   export EDITOR=nvim
