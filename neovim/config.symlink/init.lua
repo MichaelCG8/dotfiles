@@ -324,6 +324,7 @@ require('telescope').setup {
       "%~",
       "CMakeFiles",
       "%.xlsx",
+      "node_modules",
     },
     mappings = {
       i = {
