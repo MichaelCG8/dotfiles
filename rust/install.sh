@@ -22,6 +22,14 @@ source $HOME/.cargo/env
 # Useful binaries #
 ###################
 
+which rg > /dev/null 2>&1
+if [[ $? == 0 ]]
+then
+    echo "ripgrep already installed"
+else
+    cargo install ripgrep
+fi
+
 # Rust implementation of tldr
 # https://github.com/tldr-pages/tldr
 # https://crates.io/crates/tealdeer
