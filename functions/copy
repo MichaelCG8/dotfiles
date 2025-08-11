@@ -1,0 +1,21 @@
+#!/bin/zsh
+#
+# Copy the given file to the clipboard.
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    cat "$1" | pbcopy
+elif command -v xclip &> /dev/null; then
+    # Linux with X11
+    cat "$1" | xclip -selection clipboard
+elif command -v xsel &> /dev/null; then
+    # Linux with X11, alternative
+    cat "$1" | xsel --clipboard --input
+elif command -v wl-copy &> /dev/null; then
+    # Linux with Wayland
+    cat "$1" | wl-copy
+else
+    echo "No clipboard utility found. See the script comments for install recommendations."
+    exit 1
+fi
+
