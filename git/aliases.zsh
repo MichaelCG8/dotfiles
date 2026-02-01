@@ -24,6 +24,6 @@ alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
 # alias gac='git add -A && git commit -m'
 # alias ge='git-edit-new'
 
-alias glo='git log --oneline --max-count=10'
+alias glo='git log --max-count=10 --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset %s" --date=format:\'%d/%m\\''
 alias gap='git add -p'
 alias guc='git commit --amend -C HEAD' # "git update commit" Does ammends the commit and reuses the existing commit message.
