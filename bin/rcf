@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: review-forward.sh <git-rev>
+
+Interactive forward review from <git-rev> to HEAD along first-parent history.
+
+Controls:
+  Enter / n   next commit
+  p           previous commit
+  d           show diff
+  q           quit
+  h           help
+EOF
+}
+
+if [[ "${1:-}" == "" || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+start_rev="$1"
+
+git rev-parse --git-dir >/dev/null 2>&1 || {
+  echo "Not a git repository." >&2
+  exit 1
+}
+
+start_sha="$(git rev-parse --verify "${start_rev}^{commit}" 2>/dev/null || true)"
+if [[ -z "$start_sha" ]]; then
+  echo "Could not resolve '${start_rev}' to a commit." >&2
+  exit 1
+fi
+
+head_sha="$(git rev-parse --verify HEAD^{commit})"
+
+if ! git merge-base --is-ancestor "$start_sha" "$head_sha"; then
+  echo "Start commit is not an ancestor of HEAD." >&2
+  exit 1
+fi
+
+# Build commit list (bash 3 compatible)
+commits=()
+commits+=( "$start_sha" )
+while IFS= read -r sha; do
+  commits+=( "$sha" )
+done < <(git rev-list --first-parent --reverse "${start_sha}..${head_sha}")
+
+total="${#commits[@]}"
+
+print_commit_info() {
+  local idx="$1"
+  local sha="${commits[$idx]}"
+  local num=$((idx + 1))
+
+  clear
+  echo "============================================================"
+  echo "${num}/${total}  $(git rev-parse --short "$sha")"
+  echo "------------------------------------------------------------"
+  git show -s \
+    --format=$'%s%nDate: %ad%nAuthor: %an <%ae>' \
+    --date=iso-strict \
+    "$sha"
+  echo "============================================================"
+  echo
+
+  if (( idx == total - 1 )); then
+    echo "You are at HEAD. Press 'd' to view diff, or 'q' to quit."
+    echo
+  fi
+}
+
+show_diff() {
+  local sha="$1"
+  echo
+  echo "Press 'q' to exit diff and return to review"
+  echo
+
+  if git rev-parse --verify "${sha}^" >/dev/null 2>&1; then
+    git diff "${sha}^" "$sha" | delta
+  else
+    git show --format= "$sha" | delta
+  fi
+}
+
+idx=0
+print_commit_info "$idx"
+
+while true; do
+  printf "Command [d=diff, Enter/n=next, p=prev, q=quit, h=help]: "
+  IFS= read -r cmd || exit 0
+  cmd="${cmd:-n}"
+
+  case "$cmd" in
+    d)
+      show_diff "${commits[$idx]}"
+      print_commit_info "$idx"
+      ;;
+    n|"")
+      if (( idx < total - 1 )); then
+        idx=$((idx + 1))
+        print_commit_info "$idx"
+      else
+        echo "Already at HEAD (latest commit). Use 'd' to view diff or 'q' to quit."
+      fi
+      ;;
+    p)
+      if (( idx > 0 )); then
+        idx=$((idx - 1))
+        print_commit_info "$idx"
+      else
+        echo "Already at first commit."
+      fi
+      ;;
+    q)
+      echo "Quitting."
+      exit 0
+      ;;
+    h|\?)
+      usage
+      ;;
+    *)
+      echo "Unknown command: '$cmd'"
+      ;;
+  esac
+done
