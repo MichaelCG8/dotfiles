@@ -63,6 +63,8 @@ print_commit_info() {
     --format=$'%s%nDate: %ad%nAuthor: %an <%ae>' \
     --date=iso-strict \
     "$sha"
+  echo "------------------------------------------------------------"
+  git diff-tree --stat "$sha"
   echo "============================================================"
   echo
 
