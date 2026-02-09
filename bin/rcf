@@ -79,9 +79,9 @@ show_diff() {
   echo
 
   if git rev-parse --verify "${sha}^" >/dev/null 2>&1; then
-    git diff "${sha}^" "$sha" | delta
+    git diff "${sha}^" "$sha" | delta --paging=always
   else
-    git show --format= "$sha" | delta
+    git show --format= "$sha" | delta --paging=always
   fi
 }
 
