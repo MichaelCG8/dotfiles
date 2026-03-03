@@ -1,0 +1,80 @@
+#!/bin/bash
+
+HOWTO_DIR="$HOME/.howto"
+
+# Check for fzf
+if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed. Please install fzf to use this script."
+    echo "There are instructions at \$PHFOUNDATIONS/tools/README.md"
+    exit 1
+fi
+
+# Create howto directory if it doesn't exist
+if [[ ! -d "$HOWTO_DIR" ]]; then
+    mkdir -p "$HOWTO_DIR"
+    echo "Created $HOWTO_DIR — add .md files there to get started."
+    exit 0
+fi
+
+# Collect markdown files and build display entries
+entries=()
+while IFS= read -r -d '' file; do
+    # Get path relative to HOWTO_DIR
+    rel_path="${file#$HOWTO_DIR/}"
+
+    # If the top-level component is a symlinked directory, strip it
+    top_level="${rel_path%%/*}"
+    if [[ "$top_level" != "$rel_path" ]] && [[ -L "$HOWTO_DIR/$top_level" ]]; then
+        rel_path="${rel_path#$top_level/}"
+    fi
+
+    dir_part="$(dirname "$rel_path")"
+    filename="$(basename "$rel_path" .md)"
+
+    if [[ "$dir_part" == "." ]]; then
+        display_name="$filename"
+    else
+        display_name="$dir_part: $filename"
+    fi
+
+    entries+=("${display_name}"$'\t'"${file}")
+done < <(find -L "$HOWTO_DIR" -type f -name '*.md' -print0)
+
+# If no files found, exit
+if [[ ${#entries[@]} -eq 0 ]]; then
+    echo "No .md files found in $HOWTO_DIR."
+    exit 1
+fi
+
+# Sort entries alphabetically by display name
+IFS=$'\n' sorted_entries=($(printf "%s\n" "${entries[@]}" | sort -f)); unset IFS
+
+# Determine the preview command based on the availability of bat
+if command -v bat &> /dev/null; then
+    preview_command="bat --language=md --style=plain --color=always --paging=never '{2}'"
+else
+    preview_command="cat '{2}'"
+fi
+
+# Use fzf to select a file
+selected_line=$(printf "%s\n" "${sorted_entries[@]}" | fzf --reverse --with-nth=1 --delimiter=$'\t' --preview "$preview_command" --preview-window=wrap)
+
+if [[ -n $selected_line ]]; then
+    selected_file=$(echo "$selected_line" | cut -f2-)
+    editor="${EDITOR:-vi}"
+    editor_name="$(basename "$editor")"
+
+    case "$editor_name" in
+        vim|nvim)
+            "$editor" -R "$selected_file"
+            ;;
+        nano)
+            "$editor" --view "$selected_file"
+            ;;
+        *)
+            "$editor" "$selected_file"
+            ;;
+    esac
+else
+    echo "No file selected."
+fi
