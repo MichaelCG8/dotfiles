@@ -8,7 +8,7 @@ Usage: review-forward.sh <git-rev>
 Interactive forward review from <git-rev> to HEAD along first-parent history.
 
 Controls:
-  Enter / n   next commit
+  n           next commit
   p           previous commit
   d           show diff
   q           quit
@@ -91,16 +91,17 @@ idx=0
 print_commit_info "$idx"
 
 while true; do
-  printf "Command [d=diff, Enter/n=next, p=prev, q=quit, h=help]: "
+  printf "Command [d=diff, n=next, p=prev, q=quit, h=help]: "
   IFS= read -r cmd || exit 0
-  cmd="${cmd:-n}"
 
   case "$cmd" in
     d)
       show_diff "${commits[$idx]}"
       print_commit_info "$idx"
       ;;
-    n|"")
+    "")
+      ;;  # do nothing on bare Enter
+    n)
       if (( idx < total - 1 )); then
         idx=$((idx + 1))
         print_commit_info "$idx"
