@@ -12,6 +12,7 @@ Controls:
   n           next commit
   p           previous commit
   d           show diff
+  o           open changed file in editor
   q           quit
   h           help
 EOF
@@ -80,6 +81,81 @@ print_commit_info() {
   fi
 }
 
+open_file() {
+  local sha="$1"
+  local files=()
+  while IFS= read -r f; do
+    files+=("$f")
+  done < <(git diff-tree --no-commit-id -r --name-only "$sha")
+
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "No files changed in this commit."
+    return
+  fi
+
+  local selected=0
+  local count=${#files[@]}
+  local repo_root
+  repo_root="$(git rev-parse --show-toplevel)"
+
+  draw_list() {
+    for (( i = 0; i < count; i++ )); do
+      if (( i == selected )); then
+        printf "\r\033[K\033[7m %s \033[m\n" "${files[$i]}"
+      else
+        printf "\r\033[K  %s\n" "${files[$i]}"
+      fi
+    done
+  }
+
+  echo "Select file to open (↑↓=navigate, Enter=open, q=cancel):"
+  tput civis
+  draw_list
+
+  while true; do
+    IFS= read -rsn1 key
+    if [[ "$key" == $'\x1b' ]]; then
+      IFS= read -rsn1 -t 1 seq1 || true
+      IFS= read -rsn1 -t 1 seq2 || true
+      case "${seq1}${seq2}" in
+        '[A') if (( selected > 0 )); then selected=$((selected - 1)); fi ;;
+        '[B') if (( selected < count - 1 )); then selected=$((selected + 1)); fi ;;
+      esac
+      tput cuu "$count"
+      draw_list
+    elif [[ "$key" == '' ]]; then
+      tput cnorm
+      local tmpdir tmpfile
+      tmpdir="$(mktemp -d /tmp/rcf-XXXXXX)"
+      tmpfile="${tmpdir}/$(basename "${files[$selected]}")"
+      if git show "${sha}:${files[$selected]}" > "$tmpfile" 2>/dev/null; then
+        : # file existed at this commit
+      elif git show "${sha}^:${files[$selected]}" > "$tmpfile" 2>/dev/null; then
+        : # file was deleted in this commit, show pre-deletion content
+      else
+        rm -rf "$tmpdir"
+        echo "Could not retrieve file content from git."
+        return
+      fi
+      chmod 444 "$tmpfile"
+      chmod 555 "$tmpdir"
+      local editor="${VISUAL:-${EDITOR:-vi}}"
+      case "$(basename "$editor")" in
+        vi|vim|nvim)  "$editor" -M "$tmpfile" ;;
+        nano)         "$editor" --view "$tmpfile" ;;
+        emacs|emacs*) "$editor" --eval "(view-mode 1)" "$tmpfile" ;;
+        *)            "$editor" "$tmpfile" ;;
+      esac
+      chmod 755 "$tmpdir"
+      rm -rf "$tmpdir"
+      return
+    elif [[ "$key" == 'q' ]]; then
+      tput cnorm
+      return
+    fi
+  done
+}
+
 show_diff() {
   local sha="$1"
   echo
@@ -97,12 +173,16 @@ idx=0
 print_commit_info "$idx"
 
 while true; do
-  printf "Command [d=diff, n=next, p=prev, q=quit, h=help]: "
+  printf "Command [d=diff, o=open, n=next, p=prev, q=quit, h=help]: "
   IFS= read -r cmd || exit 0
 
   case "$cmd" in
     d)
       show_diff "${commits[$idx]}"
+      print_commit_info "$idx"
+      ;;
+    o)
+      open_file "${commits[$idx]}"
       print_commit_info "$idx"
       ;;
     "")
