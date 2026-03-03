@@ -3,9 +3,10 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: review-forward.sh <git-rev>
+Usage: rcf <start-rev> [<end-rev>]
 
-Interactive forward review from <git-rev> to HEAD along first-parent history.
+Interactive forward review from <start-rev> to <end-rev> (default: HEAD)
+along first-parent history.
 
 Controls:
   n           next commit
@@ -22,6 +23,7 @@ if [[ "${1:-}" == "" || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 fi
 
 start_rev="$1"
+end_rev="${2:-HEAD}"
 
 git rev-parse --git-dir >/dev/null 2>&1 || {
   echo "Not a git repository." >&2
@@ -34,10 +36,14 @@ if [[ -z "$start_sha" ]]; then
   exit 1
 fi
 
-head_sha="$(git rev-parse --verify HEAD^{commit})"
+end_sha="$(git rev-parse --verify "${end_rev}^{commit}" 2>/dev/null || true)"
+if [[ -z "$end_sha" ]]; then
+  echo "Could not resolve '${end_rev}' to a commit." >&2
+  exit 1
+fi
 
-if ! git merge-base --is-ancestor "$start_sha" "$head_sha"; then
-  echo "Start commit is not an ancestor of HEAD." >&2
+if ! git merge-base --is-ancestor "$start_sha" "$end_sha"; then
+  echo "Start commit is not an ancestor of ${end_rev}." >&2
   exit 1
 fi
 
@@ -46,7 +52,7 @@ commits=()
 commits+=( "$start_sha" )
 while IFS= read -r sha; do
   commits+=( "$sha" )
-done < <(git rev-list --first-parent --reverse "${start_sha}..${head_sha}")
+done < <(git rev-list --first-parent --reverse "${start_sha}..${end_sha}")
 
 total="${#commits[@]}"
 
@@ -69,7 +75,7 @@ print_commit_info() {
   echo
 
   if (( idx == total - 1 )); then
-    echo "You are at HEAD. Press 'd' to view diff, or 'q' to quit."
+    echo "You are at the last commit. Press 'd' to view diff, or 'q' to quit."
     echo
   fi
 }
@@ -106,7 +112,7 @@ while true; do
         idx=$((idx + 1))
         print_commit_info "$idx"
       else
-        echo "Already at HEAD (latest commit). Use 'd' to view diff or 'q' to quit."
+        echo "Already at the last commit. Use 'd' to view diff or 'q' to quit."
       fi
       ;;
     p)
