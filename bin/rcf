@@ -50,7 +50,6 @@ fi
 
 # Build commit list (bash 3 compatible)
 commits=()
-commits+=( "$start_sha" )
 while IFS= read -r sha; do
   commits+=( "$sha" )
 done < <(git rev-list --first-parent --reverse "${start_sha}..${end_sha}")
