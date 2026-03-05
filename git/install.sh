@@ -5,4 +5,5 @@ echo "Running git install script"
 
 git config --global user.email "michael.c.garbutt@gmail.com"
 git config --global user.name "Michael Garbutt"
+git config --global diff.context 6
 
