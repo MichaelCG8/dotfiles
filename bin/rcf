@@ -52,6 +52,23 @@ elif git show-ref --verify "refs/tags/${start_rev}" >/dev/null 2>&1; then
 fi
 ref_current_sha="$start_sha"
 
+end_ref_name=""
+end_ref_type=""
+if git show-ref --verify "refs/heads/${end_rev}" >/dev/null 2>&1; then
+  end_ref_name="$end_rev"
+  end_ref_type="BRANCH"
+elif git show-ref --verify "refs/tags/${end_rev}" >/dev/null 2>&1; then
+  end_ref_name="$end_rev"
+  end_ref_type="TAG"
+fi
+
+# Warn during ff if start and end are both branches but different names (e.g. main vs feature).
+# This is usually unintentional — ff is designed for local/remote pairs or tag-to-branch reviews.
+ff_cross_branch=false
+if [[ "$start_ref_type" == "BRANCH" && "$end_ref_type" == "BRANCH" && "$start_ref_name" != "$end_ref_name" ]]; then
+  ff_cross_branch=true
+fi
+
 end_sha="$(git rev-parse --verify "${end_rev}^{commit}" 2>/dev/null || true)"
 if [[ -z "$end_sha" ]]; then
   echo "Could not resolve '${end_rev}' to a commit." >&2
@@ -70,6 +87,11 @@ while IFS= read -r sha; do
 done < <(git rev-list --first-parent --reverse "${start_sha}..${end_sha}")
 
 total="${#commits[@]}"
+
+if (( total == 0 )); then
+  echo "No commits to review between ${start_rev} and ${end_rev}."
+  exit 0
+fi
 
 print_commit_info() {
   local idx="$1"
@@ -212,6 +234,11 @@ ff_ref() {
   new_subject="$(git show -s --format='%s' "$target_sha")"
 
   echo
+  if [[ "$ff_cross_branch" == true ]]; then
+    printf "\033[1;33mWARNING: FAST-FORWARDING ACROSS DIFFERENT BRANCHES\033[m\n"
+    printf "  start: %s   end: %s\n" "$start_ref_name" "$end_ref_name"
+    echo
+  fi
   printf "Fast-forward %s \033[1m'%s'\033[m ?\n" "$start_ref_type" "$start_ref_name"
   echo "  from: ${old_short} ${old_subject}"
   echo "  to:   ${new_short} ${new_subject}"
