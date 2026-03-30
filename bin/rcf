@@ -66,7 +66,7 @@ print_commit_info() {
   echo "${num}/${total}  $(git rev-parse --short "$sha")"
   echo "------------------------------------------------------------"
   git show -s \
-    --format=$'%s%nDate: %ad%nAuthor: %an <%ae>' \
+    --format=$'Date: %ad%nAuthor: %an <%ae>%n%n%B' \
     --date=iso-strict \
     "$sha"
   echo "------------------------------------------------------------"
