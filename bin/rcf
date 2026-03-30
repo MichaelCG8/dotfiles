@@ -13,6 +13,7 @@ Controls:
   p           previous commit
   d           show diff
   o           open changed file in editor
+  f           fast-forward start ref to current commit
   q           quit
   h           help
 EOF
@@ -36,6 +37,20 @@ if [[ -z "$start_sha" ]]; then
   echo "Could not resolve '${start_rev}' to a commit." >&2
   exit 1
 fi
+
+# Detect if start_rev is a branch or tag (enables the 'f' fast-forward command).
+# ref_current_sha tracks where the ref currently points, updated after each ff.
+# If start_rev is a raw SHA or other non-ref, start_ref_type stays empty and ff is disabled.
+start_ref_name=""
+start_ref_type=""
+if git show-ref --verify "refs/heads/${start_rev}" >/dev/null 2>&1; then
+  start_ref_name="$start_rev"
+  start_ref_type="BRANCH"
+elif git show-ref --verify "refs/tags/${start_rev}" >/dev/null 2>&1; then
+  start_ref_name="$start_rev"
+  start_ref_type="TAG"
+fi
+ref_current_sha="$start_sha"
 
 end_sha="$(git rev-parse --verify "${end_rev}^{commit}" 2>/dev/null || true)"
 if [[ -z "$end_sha" ]]; then
@@ -168,11 +183,60 @@ show_diff() {
   fi
 }
 
+# Fast-forward the start ref (branch or tag) to the given commit.
+# Uses --ff-only semantics: only advances if target is a descendant of current position.
+# For branches, uses update-ref with the old sha as a guard against concurrent changes.
+# For tags, uses tag -f to overwrite in place.
+ff_ref() {
+  local target_sha="$1"
+
+  if [[ -z "$start_ref_type" ]]; then
+    echo "Cannot fast-forward: start-rev is not a branch or tag."
+    return 1
+  fi
+
+  if [[ "$target_sha" == "$ref_current_sha" ]]; then
+    echo "${start_ref_type} '${start_ref_name}' already points at this commit."
+    return 1
+  fi
+
+  if ! git merge-base --is-ancestor "$ref_current_sha" "$target_sha"; then
+    echo "Cannot fast-forward: current commit is not a descendant of ${start_ref_type} '${start_ref_name}'."
+    return 1
+  fi
+
+  local old_short old_subject new_short new_subject
+  old_short="$(git rev-parse --short "$ref_current_sha")"
+  old_subject="$(git show -s --format='%s' "$ref_current_sha")"
+  new_short="$(git rev-parse --short "$target_sha")"
+  new_subject="$(git show -s --format='%s' "$target_sha")"
+
+  echo
+  printf "Fast-forward %s \033[1m'%s'\033[m ?\n" "$start_ref_type" "$start_ref_name"
+  echo "  from: ${old_short} ${old_subject}"
+  echo "  to:   ${new_short} ${new_subject}"
+  echo
+  printf "Confirm? [y/N] "
+  IFS= read -r answer
+  if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
+    if [[ "$start_ref_type" == "BRANCH" ]]; then
+      git update-ref "refs/heads/${start_ref_name}" "$target_sha" "$ref_current_sha"
+    else
+      git tag -f "$start_ref_name" "$target_sha" >/dev/null 2>&1
+    fi
+    ref_current_sha="$target_sha"
+    echo "${start_ref_type} '${start_ref_name}' updated to ${new_short}."
+  else
+    echo "Cancelled."
+    return 1
+  fi
+}
+
 idx=0
 print_commit_info "$idx"
 
 while true; do
-  printf "Command [d=diff, o=open, n=next, p=prev, q=quit, h=help]: "
+  printf "Command [d=diff, o=open, f=ff, n=next, p=prev, q=quit, h=help]: "
   IFS= read -r cmd || exit 0
 
   case "$cmd" in
@@ -183,6 +247,11 @@ while true; do
     o)
       open_file "${commits[$idx]}"
       print_commit_info "$idx"
+      ;;
+    f)
+      if ff_ref "${commits[$idx]}"; then
+        print_commit_info "$idx"
+      fi
       ;;
     "")
       ;;  # do nothing on bare Enter
