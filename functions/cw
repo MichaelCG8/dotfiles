@@ -1,0 +1,43 @@
+#!/bin/zsh
+#
+# Change to a git worktree selected via fzf.
+
+if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed."
+    return 1
+fi
+
+local worktrees
+worktrees=$(git worktree list 2>/dev/null)
+
+if [[ -z "$worktrees" ]]; then
+    echo "Not in a git repository."
+    return 1
+fi
+
+if [[ $(echo "$worktrees" | wc -l) -le 1 ]]; then
+    echo "No other worktrees found."
+    return 0
+fi
+
+local formatted
+formatted=$(echo "$worktrees" | awk '
+{
+    branch=$3; path=$1
+    gsub(/\[|\]/, "", branch)
+    branches[NR]=branch; paths[NR]=path
+    if (length(branch) > max) max = length(branch)
+}
+END {
+    for (i=1; i<=NR; i++)
+        printf "%-*s  %s\t%s\n", max, branches[i], paths[i], paths[i]
+}')
+
+local selected
+selected=$(echo "$formatted" | fzf --reverse --with-nth=1 --delimiter=$'\t')
+
+if [[ -z "$selected" ]]; then
+    return 0
+fi
+
+cd $(echo "$selected" | cut -f2)
