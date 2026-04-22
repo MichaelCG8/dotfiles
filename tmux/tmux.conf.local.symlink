@@ -5,6 +5,8 @@
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
 
+bind C-t display-popup -w 80% -h 80% -E "tmux new-session -A -s today nvim ~/Desktop/today.md"
+
 # -- bindings ------------------------------------------------------------------
 
 # preserve tmux stock bindings,
