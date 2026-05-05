@@ -5,7 +5,22 @@
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
 
+# This opens today.md in a popup session.
+# If today is already running in another session, it connects to the same session.
 bind C-t display-popup -w 80% -h 80% -E "tmux new-session -A -s today nvim ~/Desktop/today.md"
+
+# C-, renames a window, but pre-fills it with the current name.
+# That's because by default it does:
+# command-prompt -I "#W" "rename-window '%%'"
+# where -I "#W" inserts the current window name.
+# These lines replace that binding so the prompt starts empty.
+unbind ,
+bind , command-prompt "rename-window '%%'"
+
+set -s command-alias[101] 'mark-shelved=set -t "#{%%}" @status shelved'
+set -s command-alias[102] 'unmark=set -ut "#{%%}" @status'
+set-option -g command-alias[100] "mark-closeable=set-option -t '$1' @status to-be-closed"
+# command-alias list-closeable "run-shell 'tmux list-sessions -F \"#{session_name}\" | while read s; do tag=$(tmux show-options -t \"$s\" -qv @status); printf \"%s\t%s\n\" \"${tag:--}\" \"$s\"; done | sort | column -t'"
 
 # -- bindings ------------------------------------------------------------------
 
@@ -368,7 +383,7 @@ tmux_conf_theme_clock_style="24"
 #   - false (default)
 #   - disabled
 # on Linux, this requires xsel, xclip or wl-copy
-tmux_conf_copy_to_os_clipboard=false
+tmux_conf_copy_to_os_clipboard=true
 
 
 # -- user customizations -------------------------------------------------------
@@ -379,7 +394,7 @@ tmux_conf_copy_to_os_clipboard=false
 #set -g history-limit 10000
 
 # start with mouse mode enabled
-set -g mouse off
+set -g mouse on
 
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
@@ -437,9 +452,10 @@ tmux_conf_uninstall_plugins_on_reload=true
 # visit https://github.com/tmux-plugins for available plugins
 #set -g @plugin 'tmux-plugins/tmux-copycat'
 #set -g @plugin 'tmux-plugins/tmux-cpu'
-#set -g @plugin 'tmux-plugins/tmux-resurrect'
-#set -g @plugin 'tmux-plugins/tmux-continuum'
-#set -g @continuum-restore 'on'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'
+set -g @resurrect-capture-pane-contents 'on'
 
 
 # -- custom variables ----------------------------------------------------------
