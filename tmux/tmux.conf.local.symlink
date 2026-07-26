@@ -396,6 +396,14 @@ tmux_conf_copy_to_os_clipboard=true
 # start with mouse mode enabled
 set -g mouse on
 
+# scroll one line per wheel notch instead of tmux's default 5
+#   mouse reporting can't carry the trackpad's fine-grained scroll deltas, so
+#   they arrive as whole notches; multiplying those by 5 makes scrolling fly
+bind -T copy-mode    WheelUpPane   select-pane \; send -X -N 1 scroll-up
+bind -T copy-mode    WheelDownPane select-pane \; send -X -N 1 scroll-down
+bind -T copy-mode-vi WheelUpPane   select-pane \; send -X -N 1 scroll-up
+bind -T copy-mode-vi WheelDownPane select-pane \; send -X -N 1 scroll-down
+
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
 #set -g status-keys vi
