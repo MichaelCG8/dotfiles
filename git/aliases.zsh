@@ -39,5 +39,5 @@ alias guc='git commit --amend -C HEAD' # "git update commit" Does ammends the co
 diffof() {
 	ref="$1"
 	shift
-	git diff "$@" "$ref"~1 "$ref"
+	git diff "$ref"~1 "$ref" "$@"
 }
