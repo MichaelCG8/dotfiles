@@ -41,3 +41,6 @@ diffof() {
 	shift
 	git diff "$ref"~1 "$ref" "$@"
 }
+gdo() { # "git diff origin" Diffs the working tree against the current branch on origin.
+	git diff "origin/$(git rev-parse --abbrev-ref HEAD)" "$@"
+}
