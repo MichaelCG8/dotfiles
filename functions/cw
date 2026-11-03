@@ -2,6 +2,12 @@
 #
 # Change to a git worktree selected via fzf, landing in its proto/proto00
 # directory (or the worktree root if that directory doesn't exist).
+#
+# Usage: cw [query]
+#
+# The optional query pre-filters the fzf list. If it matches exactly one
+# worktree, cw changes to it without showing the picker. Matching is against
+# branch names only: paths share long prefixes, which fuzzy-match too easily.
 
 if ! command -v fzf &> /dev/null; then
     echo "Error: fzf is not installed."
@@ -31,18 +37,19 @@ formatted=$(echo "$worktrees" | awk '
 }
 END {
     for (i=1; i<=NR; i++)
-        printf "%-*s  %s\t%s\n", max, branches[i], paths[i], paths[i]
+        printf "%-*s  \t%s\t%s\n", max, branches[i], paths[i], paths[i]
 }')
 
 local selected
-selected=$(echo "$formatted" | fzf --reverse --with-nth=1 --delimiter=$'\t')
+selected=$(echo "$formatted" | fzf --reverse --delimiter=$'\t' --tabstop=1 \
+    --with-nth=1,2 --nth=1 --query="$1" --select-1)
 
 if [[ -z "$selected" ]]; then
     return 0
 fi
 
 local root
-root=$(echo "$selected" | cut -f2)
+root=$(echo "$selected" | cut -f3)
 
 if [[ -d "$root/proto/proto00" ]]; then
     cd "$root/proto/proto00"
