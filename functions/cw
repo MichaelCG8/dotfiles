@@ -1,6 +1,7 @@
 #!/bin/zsh
 #
-# Change to a git worktree selected via fzf.
+# Change to a git worktree selected via fzf, landing in its proto/proto00
+# directory (or the worktree root if that directory doesn't exist).
 
 if ! command -v fzf &> /dev/null; then
     echo "Error: fzf is not installed."
@@ -40,4 +41,11 @@ if [[ -z "$selected" ]]; then
     return 0
 fi
 
-cd $(echo "$selected" | cut -f2)
+local root
+root=$(echo "$selected" | cut -f2)
+
+if [[ -d "$root/proto/proto00" ]]; then
+    cd "$root/proto/proto00"
+else
+    cd "$root"
+fi
