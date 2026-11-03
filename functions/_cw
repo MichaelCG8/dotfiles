@@ -1,0 +1,8 @@
+#compdef cw
+(( CURRENT == 2 )) || return 1
+
+local -a branches
+branches=(${(f)"$(git worktree list --porcelain 2>/dev/null | sed -n 's|^branch refs/heads/||p')"})
+compadd -a branches
+
+# See further documentation in `functions/cw`.
