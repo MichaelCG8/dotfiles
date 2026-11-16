@@ -25,13 +25,48 @@ alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
 # alias ge='git-edit-new'
 
 glo() {
-	git log \
-		--decorate=short \
-		--max-count=16 \
-		--graph \
-		--pretty=format:"%C(auto)%h%Creset %C(green)%ad%Creset %C(blue)%<(15,trunc)%an%Creset %s %C(auto)%d%Creset" \
-		--date=format:"%d/%m" \
-		"$@"
+	local mergeBaseDev
+	if mergeBaseDev=$(git merge-base HEAD "${GLO_BASE:-dev}" 2>/dev/null); then
+		git update-ref refs/glo/base-dev "$mergeBaseDev"
+	else
+		git update-ref -d refs/glo/base-dev 2>/dev/null
+	fi
+
+	local mergeBaseMaster
+	if mergeBaseMaster=$(git merge-base HEAD "${GLO_BASE:-master}" 2>/dev/null); then
+		git update-ref refs/glo/base-master "$mergeBaseMaster"
+	else
+		git update-ref -d refs/glo/base-master 2>/dev/null
+	fi
+
+	local -a logCmd=(
+		git log
+		--clear-decorations
+		--decorate=short
+		--max-count=16
+		--graph
+		--pretty=format:"%C(auto)%h%Creset %C(green)%ad%Creset %C(blue)%<(15,trunc)%an%Creset %s %C(auto)%d%Creset"
+		--date=format:"%d/%m"
+	)
+
+	# Not a terminal: plain output, no highlighting.
+	if [[ ! -t 1 ]]; then
+		"${logCmd[@]}" "$@"
+		return
+	fi
+
+	# Highlight the merge-base rows: give the row's text a background.
+	"${logCmd[@]}" --color=always "$@" |
+		awk -v bg=$'\e[48;5;23m' -v reset=$'\e[m' '
+			/refs\/glo\// {
+				line = $0
+				gsub(/\033\[m/, reset bg, line)
+				print bg line reset
+				next
+			}
+			{ print }
+		' |
+		less -RFX
 }
 alias gap='git add -p'
 alias guc='git commit --amend -C HEAD' # "git update commit" Does ammends the commit and reuses the existing commit message.
